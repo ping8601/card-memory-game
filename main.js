@@ -11,16 +11,18 @@ const symbols = [
 ]
 
 const view = {
-  // get HTML for a card
-  getCardElement(index) {
+  // get the content of the card
+  getCardContent(index) {
     const num = this.transformNum((index % 13) + 1)
     const symbol = symbols[Math.floor(index / 13)]
     return `
-    <div class="card">
       <p>${num}</p>
       <img src="${symbol}" alt="">
-      <p>${num}</p>
-    </div>`
+      <p>${num}</p>`
+  },
+  // get HTML for a card
+  getCardElement(index) {
+    return `<div data-index="${index}" class="card back"></div>`
   },
   // change 1, 11, 12, 13 to A, J, Q, K
   transformNum(num) {
@@ -43,6 +45,20 @@ const view = {
     rootElement.innerHTML = utility.getRandomNumberArray(52)
     .map(index => this.getCardElement(index))
     .join('')
+  },
+  // flip the card
+  flipCard(card) {
+    // if the card is front-face
+    if (card.classList.contains('back')) {
+      // return back-face
+      card.classList.remove('back')
+      card.innerHTML = this.getCardContent(Number(card.dataset.index))
+    } else {
+      // if the card is back-face
+      // return front-face
+      card.classList.add('back')
+      card.innerHTML = null
+    }
   }
 }
 
@@ -59,3 +75,10 @@ const utility = {
 }
 
 view.displayCards()
+
+// select all card (as node list) and add event listener
+document.querySelectorAll('.card').forEach(
+  card => { card.addEventListener('click', event => {
+    view.flipCard(card)
+  })
+})
