@@ -40,9 +40,21 @@ const view = {
   // put the cards into card pannel
   displayCards() {
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = Array.from(Array(52).keys())
+    rootElement.innerHTML = utility.getRandomNumberArray(52)
     .map(index => this.getCardElement(index))
     .join('')
+  }
+}
+
+const utility = {
+  // shuffle the cards
+  getRandomNumberArray(count) {
+    const number = Array.from(Array(count).keys())
+    for (let i = number.length - 1; i > 0; i--) {
+      let randomIndex = Math.floor(Math.random() * (i + 1));
+      [number[i], number[randomIndex]] = [number[randomIndex], number[i]]
+    }
+    return number
   }
 }
 
