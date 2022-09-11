@@ -66,3 +66,14 @@
 #header .title h2 {
   padding-left: 0.5em
 }
+
+.wrong {
+  animation: wrongAnimation 0.2s;
+  animation-iteration-count: 5;
+}
+
+@keyframes wrongAnimation {
+  to {
+    border: 2px solid #f1c232; 
+  }
+}

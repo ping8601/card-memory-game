@@ -89,6 +89,17 @@ const view = {
   },
   renderTriedTimes(times) {
     document.querySelector('.tried').textContent = `You have tried: ${times} times`
+  },
+  appendWrongAnimation(...cards) {
+    cards.map(card => {
+      card.classList.add('wrong')
+      card.addEventListener('animationend', e => {
+        card.classList.remove('wrong')
+      },
+        {
+          once: true
+        })
+    })
   }
 }
 
@@ -121,6 +132,7 @@ const controller = {
           this.currentState = GAME_STATE.FirstCardAwait
         } else {
           // cards didn't match
+          view.appendWrongAnimation(...model.revealedCards)
           this.currentState = GAME_STATE.CardsMatchFailed
           setTimeout(this.resetCards, 1000)
         }
