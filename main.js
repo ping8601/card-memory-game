@@ -1,3 +1,12 @@
+// define five state for memory card game 
+const GAME_STATE = {
+  FirstCardAwait: 'FirstCardAwait',
+  SecondCardAwait: 'SecondCardAwait',
+  CardsMatchFailed: 'CardsMatchFailed',
+  CardsMatched: 'CardsMatched',
+  GameFinished: 'GameFinished' 
+}
+
 // link for the suits image on the card
 const symbols = [
   // spade
@@ -9,6 +18,13 @@ const symbols = [
   // club
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17988/__.png'
 ]
+
+const model = {
+  revealedCards: [],
+  isRevealedCardsMatched() {
+    return this.revealedCards[0].dataset.index % 13 === this.revealedCards[1].dataset.index % 13
+  }
+}
 
 const view = {
   // get the content of the card
@@ -40,11 +56,9 @@ const view = {
     }
   },
   // put the cards into card pannel
-  displayCards() {
+  displayCards(indexes) {
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = utility.getRandomNumberArray(52)
-    .map(index => this.getCardElement(index))
-    .join('')
+    rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join('')
   },
   // flip the card
   flipCard(card) {
@@ -59,6 +73,54 @@ const view = {
       card.classList.add('back')
       card.innerHTML = null
     }
+  },
+  // add features on paired cards
+  pairedCards(card) {
+    card.classList.add('paired')
+  }
+}
+
+const controller = {
+  currentState: GAME_STATE.FirstCardAwait,
+  generateCards() {
+    view.displayCards(utility.getRandomNumberArray(52))
+  },
+  // decide what to do with different game satates
+  dispatchCardAction(card) {
+    if (!card.classList.contains('back')) {
+      return
+    }
+    switch(this.currentState) {
+      case GAME_STATE.FirstCardAwait:
+        view.flipCard(card)
+        model.revealedCards.push(card)
+        this.currentState = GAME_STATE.SecondCardAwait
+        break
+      case GAME_STATE.SecondCardAwait:
+        view.flipCard(card)
+        model.revealedCards.push(card)
+        if (model.isRevealedCardsMatched()) {
+          // cards matched
+          this.currentState = GAME_STATE.CardsMatched
+          view.pairedCards(model.revealedCards[0])
+          view.pairedCards(model.revealedCards[1])
+          model.revealedCards = []
+          this.currentState = GAME_STATE.FirstCardAwait
+        } else {
+          // cards didn't match
+          this.currentState = GAME_STATE.CardsMatchFailed
+          setTimeout(()=>{
+            view.flipCard(model.revealedCards[0])
+            view.flipCard(model.revealedCards[1])
+            model.revealedCards = []
+            this.currentState = GAME_STATE.FirstCardAwait
+          }, 1000)
+        }
+        break
+
+    }
+    console.log('current state:', this.currentState)
+    console.log('revealed card:', model.revealedCards)
   }
 }
 
@@ -74,11 +136,11 @@ const utility = {
   }
 }
 
-view.displayCards()
+controller.generateCards()
 
 // select all card (as node list) and add event listener
 document.querySelectorAll('.card').forEach(
   card => { card.addEventListener('click', event => {
-    view.flipCard(card)
+    controller.dispatchCardAction(card)
   })
 })
