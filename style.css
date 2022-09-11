@@ -1,17 +1,14 @@
-html, body {
-  margin: 0;
-  border: 0;
-}
-
 #cards {
   /* 軸 - row */
   display: flex;
   flex-wrap: wrap;
+  width: 85%;
+  margin: 0 auto;
 }
 
 .card {
   /* 卡片在容器裡的排版 */
-  flex: 7% 0 1; /* flex-basis (%、pixel數), flex-grow (填滿剩餘空間)、flex-shrink (空間收縮)*/
+  flex: 7% 1 1; /* flex-basis (%、pixel數), flex-grow (填滿剩餘空間)、flex-shrink (空間收縮)*/
   height: 8vw; /* 8%視窗大小 */
   border: 2px solid #e0e0e0;
   margin: 2px;
@@ -43,4 +40,29 @@ html, body {
 
 .paired {
   background-color: #dae0e3;
+}
+
+#header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width:85%;
+  margin: 20px auto 0;
+}
+
+#header .title {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-content: center;
+  line-height: 12px;
+}
+
+#header .title img {
+  max-width: 3em;
+  height: 3em;
+}
+
+#header .title h2 {
+  padding-left: 0.5em
 }

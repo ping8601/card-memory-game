@@ -23,7 +23,9 @@ const model = {
   revealedCards: [],
   isRevealedCardsMatched() {
     return this.revealedCards[0].dataset.index % 13 === this.revealedCards[1].dataset.index % 13
-  }
+  },
+  score: 0,
+  triedTimes: 0
 }
 
 const view = {
@@ -81,6 +83,12 @@ const view = {
     cards.map(card => {
       card.classList.add('paired')
     })
+  },
+  renderScore(score) {
+    document.querySelector('.score').textContent = `Score: ${score}`
+  },
+  renderTriedTimes(times) {
+    document.querySelector('.tried').textContent = `You have tried: ${times} times`
   }
 }
 
@@ -101,10 +109,12 @@ const controller = {
         this.currentState = GAME_STATE.SecondCardAwait
         break
       case GAME_STATE.SecondCardAwait:
+        view.renderTriedTimes(++model.triedTimes)
         view.flipCards(card)
         model.revealedCards.push(card)
         if (model.isRevealedCardsMatched()) {
           // cards matched
+          view.renderScore(model.score += 10)
           this.currentState = GAME_STATE.CardsMatched
           view.pairedCards(...model.revealedCards)
           model.revealedCards = []
