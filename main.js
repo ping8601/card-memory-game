@@ -100,6 +100,17 @@ const view = {
           once: true
         })
     })
+  },
+  showGameFinished() {
+    const div = document.createElement('div')
+    div.classList.add('completed')
+    div.innerHTML = `
+      <p>Complete!</p>
+      <p>Score: ${model.score}</p>
+      <p>You've tried: ${model.triedTimes} times</p>
+    `
+    const header = document.querySelector('#header')
+    header.before(div)
   }
 }
 
@@ -129,6 +140,11 @@ const controller = {
           this.currentState = GAME_STATE.CardsMatched
           view.pairedCards(...model.revealedCards)
           model.revealedCards = []
+          if (model.score === 260) {
+            this.currentState = GAME_STATE.GameFinished
+            view.showGameFinished() 
+            return
+          }
           this.currentState = GAME_STATE.FirstCardAwait
         } else {
           // cards didn't match

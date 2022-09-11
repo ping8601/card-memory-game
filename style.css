@@ -1,3 +1,7 @@
+body {
+  font-family: Sans-serif;
+}
+
 #cards {
   /* 軸 - row */
   display: flex;
@@ -47,7 +51,7 @@
   flex-direction: column;
   align-items: flex-end;
   width:85%;
-  margin: 20px auto 0;
+  margin: 50px auto 0;
 }
 
 #header .title {
@@ -76,4 +80,38 @@
   to {
     border: 2px solid #f1c232; 
   }
+}
+
+.score {
+  margin: 20px 0 0 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: Grey;
+}
+
+.tried {
+  margin: 10px 0;
+  color: DarkGray;
+}
+
+.completed {
+  position: absolute;
+  z-index: 999;
+  top: 33vh;
+  background-color: RGBA(232, 246, 254, 0.8);
+  width: 100vw;
+  padding: 50px 0;
+}
+
+.completed>p {
+  font-size: 1.5em;
+  color: black;
+  text-align: center;
+  margin: 0;
+}
+
+.completed>p:first-child {
+  font-size: 3em;
+  font-weight: 700;
+  color: #758d9a;
 }
