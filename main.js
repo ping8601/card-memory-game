@@ -61,22 +61,26 @@ const view = {
     rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join('')
   },
   // flip the card
-  flipCard(card) {
-    // if the card is front-face
-    if (card.classList.contains('back')) {
-      // return back-face
-      card.classList.remove('back')
-      card.innerHTML = this.getCardContent(Number(card.dataset.index))
-    } else {
-      // if the card is back-face
-      // return front-face
-      card.classList.add('back')
-      card.innerHTML = null
-    }
+  flipCards(...cards) {
+    cards.map(card => {
+      // if the card is front-face
+      if (card.classList.contains('back')) {
+        // return back-face
+        card.classList.remove('back')
+        card.innerHTML = this.getCardContent(Number(card.dataset.index))
+      } else {
+        // if the card is back-face
+        // return front-face
+        card.classList.add('back')
+        card.innerHTML = null
+      }
+    })
   },
   // add features on paired cards
-  pairedCards(card) {
-    card.classList.add('paired')
+  pairedCards(...cards) {
+    cards.map(card => {
+      card.classList.add('paired')
+    })
   }
 }
 
@@ -92,35 +96,34 @@ const controller = {
     }
     switch(this.currentState) {
       case GAME_STATE.FirstCardAwait:
-        view.flipCard(card)
+        view.flipCards(card)
         model.revealedCards.push(card)
         this.currentState = GAME_STATE.SecondCardAwait
         break
       case GAME_STATE.SecondCardAwait:
-        view.flipCard(card)
+        view.flipCards(card)
         model.revealedCards.push(card)
         if (model.isRevealedCardsMatched()) {
           // cards matched
           this.currentState = GAME_STATE.CardsMatched
-          view.pairedCards(model.revealedCards[0])
-          view.pairedCards(model.revealedCards[1])
+          view.pairedCards(...model.revealedCards)
           model.revealedCards = []
           this.currentState = GAME_STATE.FirstCardAwait
         } else {
           // cards didn't match
           this.currentState = GAME_STATE.CardsMatchFailed
-          setTimeout(()=>{
-            view.flipCard(model.revealedCards[0])
-            view.flipCard(model.revealedCards[1])
-            model.revealedCards = []
-            this.currentState = GAME_STATE.FirstCardAwait
-          }, 1000)
+          setTimeout(this.resetCards, 1000)
         }
         break
 
     }
     console.log('current state:', this.currentState)
     console.log('revealed card:', model.revealedCards)
+  },
+  resetCards() {
+    view.flipCards(...model.revealedCards)
+    model.revealedCards = []
+    controller.currentState = GAME_STATE.FirstCardAwait
   }
 }
 
